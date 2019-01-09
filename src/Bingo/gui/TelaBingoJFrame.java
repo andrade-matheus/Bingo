@@ -48,6 +48,8 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
         jTextFieldSorteado = new javax.swing.JTextField();
         jLabelIntervalo = new javax.swing.JLabel();
         jFormattedTextFieldIntervalo = new javax.swing.JFormattedTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabelaCrono = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,7 +67,7 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Sorteados"
+                "Crescente"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -110,6 +112,24 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
         jFormattedTextFieldIntervalo.setText("90");
         jFormattedTextFieldIntervalo.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
 
+        tabelaCrono.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Sorteados"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tabelaCrono);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -130,7 +150,9 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
                     .addComponent(jLabelSorteado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabelIntervalo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jFormattedTextFieldIntervalo))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,24 +160,29 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
                 .addComponent(jPanelConteudo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonSortear, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabelSorteado)
-                        .addGap(4, 4, 4)
-                        .addComponent(jTextFieldSorteado, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabelIntervalo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jFormattedTextFieldIntervalo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabelContador)
-                        .addGap(4, 4, 4)
-                        .addComponent(jTextFieldContador, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(35, 35, 35))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonSortear, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabelSorteado)
+                                .addGap(4, 4, 4)
+                                .addComponent(jTextFieldSorteado, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabelIntervalo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jFormattedTextFieldIntervalo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabelContador)
+                                .addGap(4, 4, 4)
+                                .addComponent(jTextFieldContador, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(35, 35, 35))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         pack();
@@ -206,27 +233,45 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
     }
 
     public void load() {
+        BingoPersistenciaImplArquivo persistencia = new BingoPersistenciaImplArquivo();
+        
+        
         DefaultTableModel dfm = (DefaultTableModel) tabela.getModel();
+        List<Integer> sorteados = persistencia.listar();
         int linhas = dfm.getRowCount();
         for (int i = 0; i < linhas; i++) {
             dfm.removeRow(0);
         }
-
-        BingoPersistenciaImplArquivo persistencia = new BingoPersistenciaImplArquivo();
-
-        List<Integer> sorteados = persistencia.listar();
-
+        
+        DefaultTableModel dfmCrono = (DefaultTableModel) tabelaCrono.getModel();
+        int linhasCrono = dfmCrono.getRowCount();
+        for (int i = 0; i < linhas; i++) {
+            dfmCrono.removeRow(0);
+        }
+        
+        
+        
+        //OrdemCronologica
+        
+        for (Integer sorteado : sorteados) {
+            Object[] linhaCrono = new Object[1];
+            linhaCrono[0] = sorteado;
+            dfmCrono.addRow(linhaCrono);
+        }
+        
+        //OrdemCrescente
+        
         Collections.sort(sorteados);
-
+        
         for (Integer sorteado : sorteados) {
             Object[] linha = new Object[1];
             linha[0] = sorteado;
             dfm.addRow(linha);
         }
-
+        
         jTextFieldContador.setText(String.valueOf(sorteados.size()));
     }
-
+    
     /**
      * @param args the command line arguments
      */
@@ -271,8 +316,10 @@ public class TelaBingoJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelSorteado;
     private javax.swing.JPanel jPanelConteudo;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextFieldContador;
     private javax.swing.JTextField jTextFieldSorteado;
     private javax.swing.JTable tabela;
+    private javax.swing.JTable tabelaCrono;
     // End of variables declaration//GEN-END:variables
 }
